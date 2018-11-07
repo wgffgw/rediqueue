@@ -1,5 +1,5 @@
 # rediqueue
-## 针对redis实现多队列的生产和消费
+## 针对redis实现多队列的生产和消费,弹性内存管理,实现简单,存储可靠
 ### Producer
 ```
 func TestProducer(t *testing.T) {
