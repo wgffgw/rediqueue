@@ -35,11 +35,11 @@ func TestConsumer(t *testing.T) {
         }
         client := redisdao.GetClient("cache")
         consumer := NewConsumer(client, config)
-        partitions, _ := consumer.Partitions("xes_redis_")
+        partitions, _ := consumer.Partitions("rediqueue")
         fmt.Println(partitions)
         for _, partition := range partitions {
                 go func(partition int64) {
-                        p, _ := consumer.ConsumerPartition("xes_redis_", partition)
+                        p, _ := consumer.ConsumerPartition("redisqueue", partition)
                         for {
                                 msg := <-p.Messages()
                                 fmt.Println(msg.Value.String())
