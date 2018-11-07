@@ -1,17 +1,31 @@
 # rediqueue
 ## 针对redis实现多队列的生产和消费
+### Producer
+```
+func TestProducer(t *testing.T) {
+        config := NewConfig()
+        config.Producer.PartitionSize = 7
+        client := redisdao.GetClient("cache")
+        producer := NewProducer(client, config)
+        for {
+                msg := &ProducerMessage{Topic: "xes_redis_", Key: "aaabbb", Value: []byte("11111222223333344444")}
+                producer.Input() <- msg
+
+        }
+}
+```
+
 ### Consumer
-(```)
+```
 var messagePool = sync.Pool{
         New: func() interface{} {
                 return &ConsumerMessage{}
         },
 }
-(```)
+```
 
-(```)
+```
 func TestConsumer(t *testing.T) {
-        //go pprofutil.Pprof()
         config := NewConfig()
         config.Consumer.NewValueFunc = func() *ConsumerMessage {
                 buf := bufferPool.Get().(*bytes.Buffer)
@@ -38,4 +52,4 @@ func TestConsumer(t *testing.T) {
                         }
                 }(partition)
         }
-(```)
+```
