@@ -1,14 +1,15 @@
 # rediqueue
 ## 针对redis实现多队列的生产和消费
 ### Consumer
-
 (```)
 var messagePool = sync.Pool{
         New: func() interface{} {
                 return &ConsumerMessage{}
         },
 }
+(```)
 
+(```)
 func TestConsumer(t *testing.T) {
         //go pprofutil.Pprof()
         config := NewConfig()
