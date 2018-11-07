@@ -48,7 +48,6 @@ func TestConsumer(t *testing.T) {
         })
         consumer := NewConsumer(client, config)
         partitions, _ := consumer.Partitions("rediqueue")
-        fmt.Println(partitions)
         for _, partition := range partitions {
                 go func(partition int64) {
                         p, _ := consumer.ConsumerPartition("redisqueue", partition)
