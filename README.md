@@ -8,7 +8,7 @@ func TestProducer(t *testing.T) {
         client := redisdao.GetClient("cache")
         producer := NewProducer(client, config)
         for {
-                msg := &ProducerMessage{Topic: "xes_redis_", Key: "aaabbb", Value: []byte("11111222223333344444")}
+                msg := &ProducerMessage{Topic: "rediqueue", Key: "aaabbb", Value: []byte("11111222223333344444")}
                 producer.Input() <- msg
 
         }
