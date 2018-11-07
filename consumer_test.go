@@ -2,12 +2,11 @@ package rediqueue
 
 import (
 	"bytes"
-	"fmt"
 	"sync"
 	"testing"
 	"time"
 
-	"git.xesv5.com/golib/redisdao"
+	"github.com/go-redis/redis"
 )
 
 var messagePool = sync.Pool{
@@ -17,7 +16,13 @@ var messagePool = sync.Pool{
 }
 
 func TestConsumer(t *testing.T) {
-	//go pprofutil.Pprof()
+	client := redis.NewClient(&redis.Options{
+		Addr:        ser,
+		Password:    option.Password, // no password set
+		DB:          option.DB,       // use default DB
+		PoolSize:    option.PoolSize,
+		IdleTimeout: option.IdleTimeout,
+	})
 	config := NewConfig()
 	config.Consumer.NewValueFunc = func() *ConsumerMessage {
 		buf := bufferPool.Get().(*bytes.Buffer)
@@ -25,16 +30,13 @@ func TestConsumer(t *testing.T) {
 		msg.Value = buf
 		return msg
 	}
-	client := redisdao.GetClient("cache")
 	consumer := NewConsumer(client, config)
-	partitions, _ := consumer.Partitions("xes_redis_")
-	fmt.Println(partitions)
+	partitions, _ := consumer.Partitions("rediqueue")
 	for _, partition := range partitions {
 		go func(partition int64) {
-			p, _ := consumer.ConsumerPartition("xes_redis_", partition)
+			p, _ := consumer.ConsumerPartition("rediqueue", partition)
 			for {
 				msg := <-p.Messages()
-				fmt.Println(msg.Value.String())
 				msg.Value.Reset()
 				bufferPool.Put(msg.Value)
 				msg.Key = msg.Key[:0]

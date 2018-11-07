@@ -3,15 +3,19 @@ package rediqueue
 import (
 	"testing"
 
-	"git.xesv5.com/golib/gotools/utils/pprofutil"
-	"git.xesv5.com/golib/redisdao"
+	"github.com/go-redis/redis"
 )
 
 func TestProducer(t *testing.T) {
-	go pprofutil.Pprof()
 	config := NewConfig()
 	config.Producer.PartitionSize = 7
-	client := redisdao.GetClient("cache")
+	client := redis.NewClient(&redis.Options{
+		Addr:        ser,
+		Password:    option.Password, // no password set
+		DB:          option.DB,       // use default DB
+		PoolSize:    option.PoolSize,
+		IdleTimeout: option.IdleTimeout,
+	})
 	producer := NewProducer(client, config)
 	for {
 		msg := &ProducerMessage{Topic: "xes_redis_", Key: "aaabbb", Value: []byte("11111222223333344444")}
